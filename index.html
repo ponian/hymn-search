@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>詩歌快速查詢 Pro</title>
+    <style>
+        :root { --primary: #007AFF; --secondary: #34C759; }
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; background-color: #f0f2f5;
+        }
+        .container {
+            text-align: center; background: white; padding: 30px;
+            border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 85%; max-width: 400px;
+        }
+        input[type="number"] {
+            width: 100%; padding: 15px; font-size: 28px;
+            border: 2px solid #ddd; border-radius: 12px;
+            margin-bottom: 20px; box-sizing: border-box; text-align: center;
+        }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button {
+            padding: 18px; font-size: 20px; font-weight: bold;
+            border: none; border-radius: 12px; cursor: pointer;
+            color: white; transition: 0.2s;
+        }
+        .btn-hymn { background-color: var(--primary); }
+        .btn-supp { background-color: var(--secondary); }
+        button:active { opacity: 0.8; transform: scale(0.98); }
+        .history { margin-top: 15px; font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="margin-top:0">🎶 詩歌查詢</h2>
+    <input type="number" id="hymnNumber" placeholder="輸入編號" inputmode="numeric">
+    
+    <div class="btn-group">
+        <button class="btn-hymn" onclick="searchHymn('ch')">詩歌</button>
+        <button class="btn-supp" onclick="searchHymn('ts')">補充</button>
+    </div>
+    
+    <div id="historyLabel" class="history"></div>
+</div>
+
+<script>
+    // 頁面載入時讀取紀錄
+    window.onload = function() {
+        const lastNum = localStorage.getItem('lastHymn');
+        const lastType = localStorage.getItem('lastType');
+        if (lastNum) {
+            document.getElementById('hymnNumber').value = lastNum;
+            document.getElementById('historyLabel').innerText = `上次查詢：${lastType === 'ch' ? '詩歌' : '補充'} ${lastNum} 首`;
+        }
+    };
+
+    function searchHymn(type) {
+        const num = document.getElementById('hymnNumber').value;
+        if (!num || num < 1) {
+            alert("請輸入有效的數字");
+            return;
+        }
+        
+        // 儲存至本地空間
+        localStorage.setItem('lastHymn', num);
+        localStorage.setItem('lastType', type);
+        
+        const url = `https://www.hymnal.net/en/hymn/${type}/${num}`;
+        window.location.href = url;
+    }
+</script>
+</body>
+</html>
